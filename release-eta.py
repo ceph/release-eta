@@ -22,9 +22,9 @@ branch and release dates on the Ceph community calendar take precedence over
 the historical estimate, which is still reported for comparison.
 
 Usage:
-  src/script/release-eta.py                 # text summary of all active releases
-  src/script/release-eta.py squid           # just one release
-  src/script/release-eta.py --json out.json --html out.html
+  ./release-eta.py                 # text summary of all active releases
+  ./release-eta.py squid           # just one release
+  ./release-eta.py --json out.json --html out.html
 
 Set GITHUB_TOKEN (or have `gh` logged in) to avoid API rate limits.
 """
