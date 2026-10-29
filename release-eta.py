@@ -253,14 +253,16 @@ def dist(xs):
 
 
 def announced_dates(data):
-    """version -> announcement date, from releases.yml plus merged notes PRs
-    (releases.yml itself sometimes lags the announcement)."""
+    """version -> announcement date, from releases.yml plus merged notes PRs of
+    tagged versions (releases.yml itself sometimes lags the announcement)."""
     out = {}
     for series in data["yml"]["releases"].values():
         for r in series["releases"]:
             out[str(r["version"])] = date(r["released"])
     for n in data["notes"]:
-        if n["merged"]:
+        # A notes PR is sometimes merged early and reverted (20.2.5 on
+        # 2026-10-28), so only count it once the version is tagged.
+        if n["merged"] and n["version"] in data["tags"]:
             out.setdefault(n["version"], n["merged"])
     return out
 
@@ -770,7 +772,7 @@ h1{{font-size:18px;margin:0 0 2px}}.top{{max-width:1100px;margin:0 auto 14px}}.t
 details ul{{padding-left:18px;margin:6px 0}}a{{color:var(--accent)}}
 </style>
 <div class=top><h1>When is the next Ceph release?</h1>
-<p>Estimated by src/script/release-eta.py (written with an LLM's help) from upstream git tags, release branches, GitHub milestones, ceph.io release-notes PRs, doc/releases/releases.yml, tracker.ceph.com versions and the release manager's dates on the Ceph community calendar, using historical lags between release stages. Estimates, not commitments. Updated {e(out['generated'][:16].replace('T', ' '))} UTC.</p></div>
+<p>Estimated by release-eta.py from ceph/release-eta (written with an LLM's help) from upstream git tags, release branches, GitHub milestones, ceph.io release-notes PRs, doc/releases/releases.yml, tracker.ceph.com versions and the release manager's dates on the Ceph community calendar, using historical lags between release stages. Estimates, not commitments. Updated {e(out['generated'][:16].replace('T', ' '))} UTC.</p></div>
 <div class=grid>{''.join(cards)}</div>"""
     if fragment:
         return page
